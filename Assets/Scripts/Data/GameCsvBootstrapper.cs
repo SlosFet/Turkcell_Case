@@ -1,9 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 
 [DefaultExecutionOrder(-1000)]
 public sealed class GameCsvBootstrapper : MonoBehaviour
 {
+    public static event Action<InputDataStore> OnInputDataLoaded;
+    public static bool IsInputDataLoaded { get; private set; }
+
     [Header("Data Stores")]
     [SerializeField] private InputDataStore inputDataStore;
 
@@ -14,7 +18,7 @@ public sealed class GameCsvBootstrapper : MonoBehaviour
     [SerializeField] private TextAsset challengesCsv;
     [SerializeField] private TextAsset badgesCsv;
 
-    private void Awake()
+    private void Start()
     {
         if (inputDataStore == null)
         {
@@ -29,6 +33,9 @@ public sealed class GameCsvBootstrapper : MonoBehaviour
         inputDataStore.Badges = CsvMapper.MapRows<BadgesData>(LoadCsvText(badgesCsv, "badges"));
 
         InputDataStore.SetCurrent(inputDataStore);
+
+        IsInputDataLoaded = true;
+        OnInputDataLoaded?.Invoke(inputDataStore);
 
         Debug.Log(
             $"Input data loaded. Users: {inputDataStore.Users.Count}, Groups: {inputDataStore.Groups.Count}, " +

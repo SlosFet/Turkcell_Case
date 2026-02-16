@@ -442,7 +442,6 @@ GameObject:
   m_Component:
   - component: {fileID: 975690528}
   - component: {fileID: 975690529}
-  - component: {fileID: 975690530}
   m_Layer: 0
   m_Name: GameCsvBootstrapper
   m_TagString: Untagged
@@ -477,40 +476,105 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a95f9c648a21464e9029432766d6ee2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameCsvBootstrapper
-  activityEventsCsv: {fileID: 4900000, guid: b380537448e59424e9121ff5ba5e0565, type: 3}
-  badgesCsv: {fileID: 4900000, guid: 73711cd7072902644ae659f678d3f9de, type: 3}
-  badgeAwardsCsv: {fileID: 4900000, guid: 5460252206442124baa8e146b55a7846, type: 3}
-  challengesCsv: {fileID: 4900000, guid: f6ff3e775cdd04e4094f55ce18aa3eda, type: 3}
-  challengeAwardsCsv: {fileID: 4900000, guid: 290db8f0ece7b494ca534f94fed42411, type: 3}
-  groupsCsv: {fileID: 4900000, guid: 312251dcbc34b7a4daa4392c20557ab6, type: 3}
-  leaderboardCsv: {fileID: 4900000, guid: cd099228c187439479c3b923d1d186c6, type: 3}
-  notificationsCsv: {fileID: 4900000, guid: 19f9138f467253349a01678241705ce9, type: 3}
-  pointsLedgerCsv: {fileID: 4900000, guid: 54a8777158aa1ab4a809802a10d5ec4e, type: 3}
+  inputDataStore: {fileID: 1691176089}
   usersCsv: {fileID: 4900000, guid: 2db6bd962456a304085d7ab2b9fc1e2b, type: 3}
-  userStateCsv: {fileID: 4900000, guid: a3dd116bae5c9f14daa6f90ed75b3d6f, type: 3}
---- !u!114 &975690530
+  groupsCsv: {fileID: 4900000, guid: 312251dcbc34b7a4daa4392c20557ab6, type: 3}
+  activityEventsCsv: {fileID: 4900000, guid: b380537448e59424e9121ff5ba5e0565, type: 3}
+  challengesCsv: {fileID: 4900000, guid: f6ff3e775cdd04e4094f55ce18aa3eda, type: 3}
+  badgesCsv: {fileID: 4900000, guid: 73711cd7072902644ae659f678d3f9de, type: 3}
+--- !u!1 &1651700437
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1651700439}
+  - component: {fileID: 1651700438}
+  m_Layer: 0
+  m_Name: Case3Pipeline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1651700438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 975690527}
+  m_GameObject: {fileID: 1651700437}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67881c484a92ae4881c8069a7a3bab2, type: 3}
+  m_Script: {fileID: 11500000, guid: 984d44c2c2ccb6f409196f5b5bf079b8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameCsvDataStore
-  ActivityEvents: []
-  Badges: []
-  BadgeAwards: []
-  Challenges: []
-  ChallengeAwards: []
-  Groups: []
-  Leaderboard: []
-  Notifications: []
-  PointsLedger: []
+  m_EditorClassIdentifier: Assembly-CSharp::Case3PipelineRunner
+--- !u!4 &1651700439
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651700437}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1691176088
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1691176090}
+  - component: {fileID: 1691176089}
+  m_Layer: 0
+  m_Name: InputDatas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1691176089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691176088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37467c3f25381204b92d710ccda542bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputDataStore
   Users: []
-  UserState: []
+  Groups: []
+  ActivityEvents: []
+  Challenges: []
+  Badges: []
+--- !u!4 &1691176090
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691176088}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -519,3 +583,5 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 975690528}
+  - {fileID: 1651700439}
+  - {fileID: 1691176090}
