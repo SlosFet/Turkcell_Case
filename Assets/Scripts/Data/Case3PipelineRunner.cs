@@ -74,6 +74,12 @@ public class Case3PipelineRunner : MonoBehaviour
 
         Debug.Log($"[Pipeline] Badge awards calculated. Count: {badgeAwards.Count}");
 
+        var notificationCalculator = new NotificationCalculator();
+        var notifications = notificationCalculator.Calculate(challengeAwards);
+        _outputDataStore.Notifications = notifications;
+
+        Debug.Log($"[Pipeline] Notifications calculated. Count: {notifications.Count}");
+
         OutputDataStore.SetCurrent(_outputDataStore);
         Debug.Log("[Pipeline] Completed.");
     }
