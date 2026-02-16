@@ -86,7 +86,7 @@ public class UserDetailPanel : UI_Panel
         var hasNotifications = HasNotifications(outputDataStore.Notifications, CurrentUserId);
 
         SetText(fullNameText, user != null && !string.IsNullOrWhiteSpace(user.Name) ? user.Name : CurrentUserId);
-        SetText(totalPointsText, leaderboardRow != null ? leaderboardRow.TotalPoints.ToString() : "0");
+        SetText(totalPointsText, leaderboardRow != null ? "Total Point: " +  leaderboardRow.TotalPoints.ToString() : "0");
 
         SetText(triggeredChallengesText, BuildTriggeredChallengesText(userAwards));
         SetText(selectedChallengeText, BuildSelectedChallengeText(userAwards));
@@ -112,7 +112,7 @@ public class UserDetailPanel : UI_Panel
         {
             var badgeSprite = spriteMapper != null ? spriteMapper.GetBadgeSprite(highestBadgeId) : null;
             badgeImage.sprite = badgeSprite;
-            badgeImage.enabled = badgeSprite != null;
+            badgeImage.transform.parent.gameObject.SetActive(badgeSprite != null);
         }
     }
 
