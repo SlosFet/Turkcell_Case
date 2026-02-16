@@ -9,18 +9,12 @@ public class ChallengeCalculator
         "^([a-zA-Z0-9_]+)\\s*(>=|<=|==|>|<)\\s*(-?[0-9]+)$",
         RegexOptions.Compiled);
 
-    public List<ChallengeAwardsData> Calculate(InputDataStore inputDataStore, List<UserStateData> userState)
+    public List<ChallengeAwardsData> Calculate(InputDataStore inputDataStore, List<UserStateData> userState, DateTime dataDate)
     {
         var results = new List<ChallengeAwardsData>();
         var challenges = inputDataStore != null ? inputDataStore.Challenges : null;
 
         if (challenges == null || userState == null)
-        {
-            return results;
-        }
-
-        var metricCalculator = new MetricCalculator();
-        if (!metricCalculator.TryResolveAsOfDate(inputDataStore, out var asOfDate))
         {
             return results;
         }
@@ -78,7 +72,7 @@ public class ChallengeCalculator
                 SelectedChallenge = selected.ChallengeId,
                 RewardPoints = selected.RewardPoints,
                 SuppressedChallenges = suppressedIds,
-                Timestamp = asOfDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "T00:00:00Z"
+                Timestamp = dataDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "T00:00:00Z"
             });
 
             awardSequence++;

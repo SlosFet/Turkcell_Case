@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Globalization;
+using UnityEngine;
 
 public class Case3PipelineRunner : MonoBehaviour
 {
@@ -36,25 +38,71 @@ public class Case3PipelineRunner : MonoBehaviour
     {
         Debug.Log("[Pipeline] Started.");
 
-        var metricCalculator = new MetricCalculator();
-        if (!metricCalculator.TryResolveAsOfDate(inputDataStore, out var resolvedAsOfDate))
+        if (!TryResolveDataDate(inputDataStore, out var dataDate))
         {
             Debug.LogError("[Pipeline] No valid date found in input activity events.");
             return;
         }
 
-        var userState = metricCalculator.Calculate(inputDataStore);
+        var metricCalculator = new MetricCalculator();
+        var userState = metricCalculator.Calculate(inputDataStore, dataDate);
         _outputDataStore.UserState = userState;
 
-        Debug.Log($"[Pipeline] Metrics calculated for data date {resolvedAsOfDate:yyyy-MM-dd}. UserState count: {userState.Count}");
+        Debug.Log($"[Pipeline] Metrics calculated for data date {dataDate:yyyy-MM-dd}. UserState count: {userState.Count}");
 
         var challengeCalculator = new ChallengeCalculator();
-        var challengeAwards = challengeCalculator.Calculate(inputDataStore, userState);
+        var challengeAwards = challengeCalculator.Calculate(inputDataStore, userState, dataDate);
         _outputDataStore.ChallengeAwards = challengeAwards;
 
-        Debug.Log($"[Pipeline] Challenge awards calculated for data date {resolvedAsOfDate:yyyy-MM-dd}. Count: {challengeAwards.Count}");
+        Debug.Log($"[Pipeline] Challenge awards calculated for data date {dataDate:yyyy-MM-dd}. Count: {challengeAwards.Count}");
 
         OutputDataStore.SetCurrent(_outputDataStore);
         Debug.Log("[Pipeline] Completed.");
+    }
+
+    public static bool TryResolveDataDate(InputDataStore inputDataStore, out DateTime dataDate)
+    {
+        dataDate = DateTime.MinValue;
+        var events = inputDataStore != null ? inputDataStore.ActivityEvents : null;
+
+        if (events == null || events.Count == 0)
+        {
+            return false;
+        }
+
+        var hasLatest = false;
+        var latest = DateTime.MinValue;
+
+        for (var i = 0; i < events.Count; i++)
+        {
+            var evt = events[i];
+            if (evt == null)
+            {
+                continue;
+            }
+
+            if (!DateTime.TryParseExact(evt.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                if (!DateTime.TryParse(evt.Date, out parsedDate))
+                {
+                    continue;
+                }
+            }
+
+            var current = parsedDate.Date;
+            if (!hasLatest || current > latest)
+            {
+                latest = current;
+                hasLatest = true;
+            }
+        }
+
+        if (!hasLatest)
+        {
+            return false;
+        }
+
+        dataDate = latest;
+        return true;
     }
 }
