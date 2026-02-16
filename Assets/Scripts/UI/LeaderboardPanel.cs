@@ -17,7 +17,6 @@ public class LeaderboardPanel : UI_Panel
 
     [Header("Visual Defaults")]
     [SerializeField] private Sprite defaultUserPhoto;
-    [SerializeField] private Sprite defaultBadgeSprite;
     [SerializeField] private List<BadgeSpriteEntry> badgeSprites = new List<BadgeSpriteEntry>();
 
     private readonly List<LeaderboardItem> spawnedItems = new List<LeaderboardItem>();
@@ -122,21 +121,16 @@ public class LeaderboardPanel : UI_Panel
 
     private Sprite ResolveBadgeSprite(string badgeId)
     {
-        if (string.IsNullOrWhiteSpace(badgeId))
-        {
-            return defaultBadgeSprite;
-        }
-
         for (var i = 0; i < badgeSprites.Count; i++)
         {
             var entry = badgeSprites[i];
             if (entry != null && string.Equals(entry.badgeId, badgeId, StringComparison.OrdinalIgnoreCase))
             {
-                return entry.sprite != null ? entry.sprite : defaultBadgeSprite;
+                return entry.sprite;
             }
         }
 
-        return defaultBadgeSprite;
+        return null;
     }
 
     private int ParseBadgeLevel(string badgeId)

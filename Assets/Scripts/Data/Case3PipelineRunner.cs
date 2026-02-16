@@ -12,6 +12,7 @@ public class Case3PipelineRunner : MonoBehaviour
 
     private void OnEnable()
     {
+        print(123);
         GameCsvBootstrapper.OnInputDataLoaded += HandleInputDataLoaded;
     }
 

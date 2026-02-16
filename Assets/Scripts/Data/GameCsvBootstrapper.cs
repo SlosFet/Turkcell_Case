@@ -16,7 +16,11 @@ public class GameCsvBootstrapper : MonoBehaviour
     [SerializeField] private TextAsset challengesCsv;
     [SerializeField] private TextAsset badgesCsv;
 
-    private void Awake()
+    void Start()
+    {
+        DefineDatas();
+    }
+    private void DefineDatas()
     {
         if (inputDataStore == null)
         {
