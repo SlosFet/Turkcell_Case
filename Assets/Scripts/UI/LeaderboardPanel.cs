@@ -44,7 +44,11 @@ public class LeaderboardPanel : UI_Panel
 
             var fullName = user != null ? user.Name : row.UserId;
             var userSprite = spriteMapper != null ? spriteMapper.GetUserSprite(row.UserId) : null;
-            var badgeSprite = spriteMapper != null ? spriteMapper.GetBadgeSprite(badgeId) : null;
+            Sprite badgeSprite = null;
+            if (!string.IsNullOrWhiteSpace(badgeId) && spriteMapper != null)
+            {
+                badgeSprite = spriteMapper.GetBadgeSprite(badgeId);
+            }
 
             item.Bind(
                 row.UserId,
