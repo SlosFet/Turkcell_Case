@@ -70,7 +70,7 @@ public class ChallengeCalculator
                 SelectedChallenge = selected.ChallengeId,
                 RewardPoints = selected.RewardPoints,
                 SuppressedChallenges = suppressedIds,
-                Timestamp = dataDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "T00:00:00Z"
+                Timestamp = RandomTimestampGenerator.CreateIsoUtc(dataDate)
             });
 
             awardSequence++;
