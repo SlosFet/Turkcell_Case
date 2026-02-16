@@ -5,24 +5,17 @@ using UnityEngine.Events;
 
 public class LeaderboardPanel : UI_Panel
 {
-    [Serializable]
-    private class BadgeSpriteEntry
-    {
-        public string badgeId;
-        public Sprite sprite;
-    }
-
     [Header("List")]
     [SerializeField] private Transform listRoot;
     [SerializeField] private LeaderboardItem itemPrefab;
 
-    [Header("Visual Defaults")]
-    [SerializeField] private Sprite defaultUserPhoto;
-    [SerializeField] private List<BadgeSpriteEntry> badgeSprites = new List<BadgeSpriteEntry>();
-
     private readonly List<LeaderboardItem> spawnedItems = new List<LeaderboardItem>();
 
-    public void Render(InputDataStore inputDataStore, OutputDataStore outputDataStore, UnityAction<string> onUserSelected)
+    public void Render(
+        InputDataStore inputDataStore,
+        OutputDataStore outputDataStore,
+        UserBadgeSpriteMapper spriteMapper,
+        UnityAction<string> onUserSelected)
     {
         ClearItems();
 
@@ -50,14 +43,15 @@ public class LeaderboardPanel : UI_Panel
             badgeByUser.TryGetValue(row.UserId, out var badgeId);
 
             var fullName = user != null ? user.Name : row.UserId;
-            var badgeSprite = ResolveBadgeSprite(badgeId);
+            var userSprite = spriteMapper != null ? spriteMapper.GetUserSprite(row.UserId) : null;
+            var badgeSprite = spriteMapper != null ? spriteMapper.GetBadgeSprite(badgeId) : null;
 
             item.Bind(
                 row.UserId,
                 fullName,
                 row.Rank,
                 row.TotalPoints,
-                defaultUserPhoto,
+                userSprite,
                 badgeSprite,
                 onUserSelected);
         }
@@ -118,20 +112,6 @@ public class LeaderboardPanel : UI_Panel
         }
 
         return map;
-    }
-
-    private Sprite ResolveBadgeSprite(string badgeId)
-    {
-        for (var i = 0; i < badgeSprites.Count; i++)
-        {
-            var entry = badgeSprites[i];
-            if (entry != null && string.Equals(entry.badgeId, badgeId, StringComparison.OrdinalIgnoreCase))
-            {
-                return entry.sprite;
-            }
-        }
-
-        return null;
     }
 
     private int ParseBadgeLevel(string badgeId)

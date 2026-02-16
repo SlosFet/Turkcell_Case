@@ -226,9 +226,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -218.49173}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &240757129
@@ -645,6 +645,70 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &823204235
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 823204237}
+  - component: {fileID: 823204236}
+  m_Layer: 0
+  m_Name: SpriteMapper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &823204236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 823204235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5dc7ffd9c1aa274b898e3ac471c16e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UserBadgeSpriteMapper
+  defaultUserSprite: {fileID: 0}
+  defaultBadgeSprite: {fileID: 0}
+  userSprites:
+  - userId: U1
+    sprite: {fileID: 21300000, guid: 94189454be3b9a64fbd0eac712776cc5, type: 3}
+  - userId: U2
+    sprite: {fileID: 21300000, guid: 94189454be3b9a64fbd0eac712776cc5, type: 3}
+  - userId: U3
+    sprite: {fileID: 21300000, guid: 94189454be3b9a64fbd0eac712776cc5, type: 3}
+  - userId: U4
+    sprite: {fileID: 21300000, guid: 94189454be3b9a64fbd0eac712776cc5, type: 3}
+  - userId: U5
+    sprite: {fileID: 21300000, guid: 94189454be3b9a64fbd0eac712776cc5, type: 3}
+  badgeSprites:
+  - badgeId: B1
+    sprite: {fileID: 21300000, guid: ae0ed12b20c5ed74ca1950dc4655f87c, type: 3}
+  - badgeId: B2
+    sprite: {fileID: 21300000, guid: ae0ed12b20c5ed74ca1950dc4655f87c, type: 3}
+  - badgeId: B3
+    sprite: {fileID: 21300000, guid: ae0ed12b20c5ed74ca1950dc4655f87c, type: 3}
+--- !u!4 &823204237
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 823204235}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 543.13104, y: 966.2156, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -768,9 +832,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UserDetailPanel
   userPhotoImage: {fileID: 1433508903}
   badgeImage: {fileID: 58537274}
-  defaultUserPhoto: {fileID: 0}
-  defaultBadgeSprite: {fileID: 0}
-  badgeSprites: []
   fullNameText: {fileID: 1875789776}
   totalPointsText: {fileID: 1680153167}
   triggeredChallengesText: {fileID: 240757129}
@@ -812,9 +873,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -605.47516}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1351132715
@@ -1049,9 +1110,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -798.96686}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1382218040
@@ -1240,9 +1301,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -508.7293}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1450679351
@@ -1377,9 +1438,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -702.221}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1592415232
@@ -1630,9 +1691,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -411.98346}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1676476856
@@ -1767,9 +1828,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -121.745865}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1680153167
@@ -2029,9 +2090,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -25}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1875789776
@@ -2340,7 +2401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3615398569478507510, guid: 66474292b0816cc46b4524d5d5eea77d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4012185202451518409, guid: 66474292b0816cc46b4524d5d5eea77d, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2561,6 +2622,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DashboardManager
   leaderboardPanel: {fileID: 1915462746}
   userDetailPanel: {fileID: 1248350218}
+  spriteMapper: {fileID: 823204236}
 --- !u!1 &1915462745 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1197848181231584119, guid: 66474292b0816cc46b4524d5d5eea77d, type: 3}
@@ -2580,14 +2642,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardPanel
   listRoot: {fileID: 1915462747}
   itemPrefab: {fileID: 3776394641182571355, guid: 9ccc33c0d99113f41b6c3cf81f46942e, type: 3}
-  defaultUserPhoto: {fileID: 21300000, guid: 94189454be3b9a64fbd0eac712776cc5, type: 3}
-  badgeSprites:
-  - badgeId: B1
-    sprite: {fileID: 21300000, guid: ae0ed12b20c5ed74ca1950dc4655f87c, type: 3}
-  - badgeId: B2
-    sprite: {fileID: 21300000, guid: ae0ed12b20c5ed74ca1950dc4655f87c, type: 3}
-  - badgeId: B3
-    sprite: {fileID: 21300000, guid: ae0ed12b20c5ed74ca1950dc4655f87c, type: 3}
 --- !u!224 &1915462747 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6004146980583538442, guid: 66474292b0816cc46b4524d5d5eea77d, type: 3}
@@ -2625,9 +2679,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1594811205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 488.55, y: -315.2376}
   m_SizeDelta: {x: 977.1, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2025392428
@@ -2743,3 +2797,4 @@ SceneRoots:
   - {fileID: 519163143}
   - {fileID: 1915462742}
   - {fileID: 1382218043}
+  - {fileID: 823204237}

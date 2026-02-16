@@ -6,6 +6,9 @@ public class DashboardManager : MonoBehaviour
     [SerializeField] private LeaderboardPanel leaderboardPanel;
     [SerializeField] private UserDetailPanel userDetailPanel;
 
+    [Header("Mappers")]
+    [SerializeField] private UserBadgeSpriteMapper spriteMapper;
+
     private InputDataStore cachedInputDataStore;
     private OutputDataStore cachedOutputDataStore;
 
@@ -30,7 +33,7 @@ public class DashboardManager : MonoBehaviour
             return;
         }
 
-        leaderboardPanel.Render(inputDataStore, outputDataStore, OpenUserDetailFromLeaderboard);
+        leaderboardPanel.Render(inputDataStore, outputDataStore, spriteMapper, OpenUserDetailFromLeaderboard);
         OpenLeaderboardPanel();
     }
 
@@ -56,7 +59,7 @@ public class DashboardManager : MonoBehaviour
 
         if (userDetailPanel != null)
         {
-            userDetailPanel.ShowUser(userId, cachedInputDataStore, cachedOutputDataStore);
+            userDetailPanel.ShowUser(userId, cachedInputDataStore, cachedOutputDataStore, spriteMapper);
             userDetailPanel.Open();
         }
     }

@@ -7,19 +7,9 @@ using UnityEngine.UI;
 
 public class UserDetailPanel : UI_Panel
 {
-    [Serializable]
-    private class BadgeSpriteEntry
-    {
-        public string badgeId;
-        public Sprite sprite;
-    }
-
     [Header("Visual")]
     [SerializeField] private Image userPhotoImage;
     [SerializeField] private Image badgeImage;
-    [SerializeField] private Sprite defaultUserPhoto;
-    [SerializeField] private Sprite defaultBadgeSprite;
-    [SerializeField] private List<BadgeSpriteEntry> badgeSprites = new List<BadgeSpriteEntry>();
 
     [Header("Texts")]
     [SerializeField] private TMP_Text fullNameText;
@@ -34,13 +24,17 @@ public class UserDetailPanel : UI_Panel
 
     public string CurrentUserId { get; private set; }
 
-    public void ShowUser(string userId, InputDataStore inputDataStore, OutputDataStore outputDataStore)
+    public void ShowUser(
+        string userId,
+        InputDataStore inputDataStore,
+        OutputDataStore outputDataStore,
+        UserBadgeSpriteMapper spriteMapper)
     {
         CurrentUserId = userId;
-        Render(inputDataStore, outputDataStore);
+        Render(inputDataStore, outputDataStore, spriteMapper);
     }
 
-    private void Render(InputDataStore inputDataStore, OutputDataStore outputDataStore)
+    private void Render(InputDataStore inputDataStore, OutputDataStore outputDataStore, UserBadgeSpriteMapper spriteMapper)
     {
         if (string.IsNullOrWhiteSpace(CurrentUserId) || inputDataStore == null || outputDataStore == null)
         {
@@ -69,13 +63,14 @@ public class UserDetailPanel : UI_Panel
 
         if (userPhotoImage != null)
         {
-            userPhotoImage.sprite = defaultUserPhoto;
-            userPhotoImage.enabled = defaultUserPhoto != null;
+            var userSprite = spriteMapper != null ? spriteMapper.GetUserSprite(CurrentUserId) : null;
+            userPhotoImage.sprite = userSprite;
+            userPhotoImage.enabled = userSprite != null;
         }
 
         if (badgeImage != null)
         {
-            var badgeSprite = ResolveBadgeSprite(highestBadgeId);
+            var badgeSprite = spriteMapper != null ? spriteMapper.GetBadgeSprite(highestBadgeId) : null;
             badgeImage.sprite = badgeSprite;
             badgeImage.enabled = badgeSprite != null;
         }
@@ -264,25 +259,6 @@ public class UserDetailPanel : UI_Panel
         }
 
         return sb.Length > 0 ? sb.ToString() : "-";
-    }
-
-    private Sprite ResolveBadgeSprite(string badgeId)
-    {
-        if (string.IsNullOrWhiteSpace(badgeId))
-        {
-            return defaultBadgeSprite;
-        }
-
-        for (var i = 0; i < badgeSprites.Count; i++)
-        {
-            var entry = badgeSprites[i];
-            if (entry != null && string.Equals(entry.badgeId, badgeId, StringComparison.OrdinalIgnoreCase))
-            {
-                return entry.sprite != null ? entry.sprite : defaultBadgeSprite;
-            }
-        }
-
-        return defaultBadgeSprite;
     }
 
     private static int ParseBadgeLevel(string badgeId)
