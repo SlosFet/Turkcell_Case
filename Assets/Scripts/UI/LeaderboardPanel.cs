@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LeaderboardPanel : UI_Panel
 {
@@ -14,12 +15,58 @@ public class LeaderboardPanel : UI_Panel
     [Header("List")]
     [SerializeField] private Transform listRoot;
     [SerializeField] private LeaderboardItem itemPrefab;
+    
+    [Header("Controls")]
+    [SerializeField] private Button addUserButton;
+    [SerializeField] private Button whatIfButton;
 
     [Header("Visual Defaults")]
     [SerializeField] private Sprite defaultUserPhoto;
     [SerializeField] private List<BadgeSpriteEntry> badgeSprites = new List<BadgeSpriteEntry>();
 
     private readonly List<LeaderboardItem> spawnedItems = new List<LeaderboardItem>();
+    private Action onAddUserCallback;
+    private Action onWhatIfCallback;
+
+    public void Initialize(Action onAddUser, Action onWhatIf)
+    {
+        this.onAddUserCallback = onAddUser;
+        this.onWhatIfCallback = onWhatIf;
+    }
+
+    private void Start()
+    {
+        if (addUserButton != null)
+        {
+            addUserButton.onClick.AddListener(OnAddUserButtonClicked);
+        }
+        if (whatIfButton != null)
+        {
+            whatIfButton.onClick.AddListener(OnWhatIfButtonClicked);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (addUserButton != null)
+        {
+            addUserButton.onClick.RemoveListener(OnAddUserButtonClicked);
+        }
+        if (whatIfButton != null)
+        {
+            whatIfButton.onClick.RemoveListener(OnWhatIfButtonClicked);
+        }
+    }
+
+    private void OnAddUserButtonClicked()
+    {
+        onAddUserCallback?.Invoke();
+    }
+
+    private void OnWhatIfButtonClicked()
+    {
+        onWhatIfCallback?.Invoke();
+    }
 
     public void Render(InputDataStore inputDataStore, OutputDataStore outputDataStore, Action<string> onUserSelected)
     {
