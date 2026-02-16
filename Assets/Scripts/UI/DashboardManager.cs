@@ -4,6 +4,7 @@ public class DashboardManager : MonoBehaviour
 {
     [Header("Panels")]
     [SerializeField] private LeaderboardPanel leaderboardPanel;
+    [SerializeField] private UserDetailPanel userDetailPanel;
 
     private void OnEnable()
     {
@@ -23,21 +24,34 @@ public class DashboardManager : MonoBehaviour
             return;
         }
 
-        leaderboardPanel.Render(inputDataStore, outputDataStore, HandleUserSelected);
+        leaderboardPanel.Render(inputDataStore, outputDataStore, OpenUserDetailFromLeaderboard);
         OpenLeaderboardPanel();
     }
 
     public void OpenLeaderboardPanel()
     {
+        if (userDetailPanel != null)
+        {
+            userDetailPanel.Close();
+        }
+
         if (leaderboardPanel != null)
         {
             leaderboardPanel.Open();
         }
     }
 
-    private void HandleUserSelected(string userId)
+    private void OpenUserDetailFromLeaderboard(string userId)
     {
-        Debug.Log($"[Dashboard] User selected from leaderboard: {userId}");
-        // Next step: open user detail panel.
+        if (leaderboardPanel != null)
+        {
+            leaderboardPanel.Close();
+        }
+
+        if (userDetailPanel != null)
+        {
+            userDetailPanel.ShowUser(userId);
+            userDetailPanel.Open();
+        }
     }
 }

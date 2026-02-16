@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LeaderboardPanel : UI_Panel
 {
@@ -21,7 +22,7 @@ public class LeaderboardPanel : UI_Panel
 
     private readonly List<LeaderboardItem> spawnedItems = new List<LeaderboardItem>();
 
-    public void Render(InputDataStore inputDataStore, OutputDataStore outputDataStore, Action<string> onUserSelected)
+    public void Render(InputDataStore inputDataStore, OutputDataStore outputDataStore, UnityAction<string> onUserSelected)
     {
         ClearItems();
 
@@ -135,7 +136,6 @@ public class LeaderboardPanel : UI_Panel
 
     private int ParseBadgeLevel(string badgeId)
     {
-        // B1, B2, B3 pattern for quick level comparison
         if (string.IsNullOrWhiteSpace(badgeId) || badgeId.Length < 2)
         {
             return 0;

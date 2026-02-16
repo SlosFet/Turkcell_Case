@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class LeaderboardItem : MonoBehaviour
@@ -14,7 +15,7 @@ public class LeaderboardItem : MonoBehaviour
     [SerializeField] private Button detailsButton;
 
     private string userId;
-    private Action<string> onClick;
+    private UnityAction<string> onClick;
 
     public void Bind(
         string userIdValue,
@@ -23,7 +24,7 @@ public class LeaderboardItem : MonoBehaviour
         int points,
         Sprite userPhoto,
         Sprite badgeSprite,
-        Action<string> onClickHandler)
+        UnityAction<string> onClickHandler)
     {
         userId = userIdValue;
         onClick = onClickHandler;
