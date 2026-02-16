@@ -2,7 +2,13 @@
 
 public class Case3PipelineRunner : MonoBehaviour
 {
+    [Header("Data Stores")]
     [SerializeField] private OutputDataStore _outputDataStore;
+
+    [Header("Metrics")]
+    [SerializeField] private string asOfDate = string.Empty; // yyyy-MM-dd (empty => latest event date)
+
+    [SerializeField] private MetricCalculator _metricCalculator;
 
     private void OnEnable()
     {
@@ -22,6 +28,12 @@ public class Case3PipelineRunner : MonoBehaviour
             return;
         }
 
+        if (_outputDataStore == null)
+        {
+            Debug.LogError("Case3PipelineRunner: OutputDataStore reference is missing.");
+            return;
+        }
+
         RunPipeline(inputDataStore);
     }
 
@@ -29,12 +41,14 @@ public class Case3PipelineRunner : MonoBehaviour
     {
         Debug.Log("[Pipeline] Started.");
 
-        // Step 1 already done in bootstrapper: input CSVs are loaded into InputDataStore.
-        Debug.Log("[Pipeline] Step 1 complete: Input data is ready.");
+        var metricCalculator = new MetricCalculator();
+        var resolvedAsOfDate = metricCalculator.ResolveAsOfDate(inputDataStore, asOfDate);
+        var userState = metricCalculator.Calculate(inputDataStore, resolvedAsOfDate);
 
-        // Step 2 will be implemented next: user metrics calculation (today / 7d).
-        Debug.Log("[Pipeline] Step 2 pending: MetricCalculator will run here.");
+        _outputDataStore.UserState = userState;
+        OutputDataStore.SetCurrent(_outputDataStore);
 
+        Debug.Log($"[Pipeline] Metrics calculated for {resolvedAsOfDate:yyyy-MM-dd}. UserState count: {userState.Count}");
         Debug.Log("[Pipeline] Completed.");
     }
 }

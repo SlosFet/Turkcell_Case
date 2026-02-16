@@ -5,7 +5,6 @@ using UnityEngine;
 public class GameCsvBootstrapper : MonoBehaviour
 {
     public static event Action<InputDataStore> OnInputDataLoaded;
-    public static bool IsInputDataLoaded { get; private set; }
 
     [Header("Data Stores")]
     [SerializeField] private InputDataStore inputDataStore;
@@ -33,7 +32,6 @@ public class GameCsvBootstrapper : MonoBehaviour
 
         InputDataStore.SetCurrent(inputDataStore);
 
-        IsInputDataLoaded = true;
         OnInputDataLoaded?.Invoke(inputDataStore);
 
         Debug.Log(
