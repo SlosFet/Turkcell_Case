@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -10,17 +11,26 @@ public class GameCsvBootstrapper : MonoBehaviour
     [SerializeField] private InputDataStore inputDataStore;
 
     [Header("Optional Input CSV overrides")]
-    [SerializeField] private TextAsset usersCsv;
     [SerializeField] private TextAsset groupsCsv;
-    [SerializeField] private TextAsset activityEventsCsv;
     [SerializeField] private TextAsset challengesCsv;
     [SerializeField] private TextAsset badgesCsv;
 
-    void Start()
+    private void Awake()
     {
-        DefineDatas();
+        LoadStaticInputData();
     }
-    private void DefineDatas()
+
+    private void OnEnable()
+    {
+        AddUserPanel.OnUserDataSubmitted += HandleUserDataSubmitted;
+    }
+
+    private void OnDisable()
+    {
+        AddUserPanel.OnUserDataSubmitted -= HandleUserDataSubmitted;
+    }
+
+    private void LoadStaticInputData()
     {
         if (inputDataStore == null)
         {
@@ -28,19 +38,34 @@ public class GameCsvBootstrapper : MonoBehaviour
             return;
         }
 
-        inputDataStore.Users = CsvMapper.MapRows<UsersData>(LoadCsvText(usersCsv, "users"));
         inputDataStore.Groups = CsvMapper.MapRows<GroupsData>(LoadCsvText(groupsCsv, "groups"));
-        inputDataStore.ActivityEvents = CsvMapper.MapRows<ActivityEventsData>(LoadCsvText(activityEventsCsv, "activity_events"));
         inputDataStore.Challenges = CsvMapper.MapRows<ChallengesData>(LoadCsvText(challengesCsv, "challenges"));
         inputDataStore.Badges = CsvMapper.MapRows<BadgesData>(LoadCsvText(badgesCsv, "badges"));
 
         InputDataStore.SetCurrent(inputDataStore);
 
+        Debug.Log(
+            $"Static input data loaded. Groups: {inputDataStore.Groups.Count}, " +
+            $"Challenges: {inputDataStore.Challenges.Count}, Badges: {inputDataStore.Badges.Count}");
+    }
+
+    private void HandleUserDataSubmitted(List<UsersData> users, List<ActivityEventsData> activityEvents)
+    {
+        if (inputDataStore == null)
+        {
+            Debug.LogError("GameCsvBootstrapper: InputDataStore reference is missing.");
+            return;
+        }
+
+        inputDataStore.Users = users ?? new List<UsersData>();
+        inputDataStore.ActivityEvents = activityEvents ?? new List<ActivityEventsData>();
+
+        InputDataStore.SetCurrent(inputDataStore);
         OnInputDataLoaded?.Invoke(inputDataStore);
 
         Debug.Log(
-            $"Input data loaded. Users: {inputDataStore.Users.Count}, Groups: {inputDataStore.Groups.Count}, " +
-            $"Events: {inputDataStore.ActivityEvents.Count}, Challenges: {inputDataStore.Challenges.Count}, Badges: {inputDataStore.Badges.Count}");
+            $"Runtime user data received. Users: {inputDataStore.Users.Count}, " +
+            $"Events: {inputDataStore.ActivityEvents.Count}");
     }
 
     private string LoadCsvText(TextAsset overrideAsset, string fileNameWithoutExtension)

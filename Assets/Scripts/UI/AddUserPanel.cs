@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,13 +8,7 @@ using UnityEngine.UI;
 
 public class AddUserPanel : UI_Panel
 {
-    [Serializable]
-    public class ActivityInputRow
-    {
-        public string date;
-        public TMP_InputField firstInput;
-        public TMP_InputField secondInput;
-    }
+    public static event Action<List<UsersData>, List<ActivityEventsData>> OnUserDataSubmitted;
 
     [Header("Actions")]
     [SerializeField] private Button applyButton;
@@ -24,7 +19,7 @@ public class AddUserPanel : UI_Panel
     [SerializeField] private TMP_InputField cityInput;
 
     [Header("Activity Inputs")]
-    [SerializeField] private List<ActivityInputRow> activityInputRows = new List<ActivityInputRow>();
+    [SerializeField] private List<ActivityInput> activityInputRows = new List<ActivityInput>();
     [SerializeField] private int defaultUniqueGroups = 1;
 
     [Header("Events")]
@@ -52,6 +47,7 @@ public class AddUserPanel : UI_Panel
         {
             continueButton.onClick.RemoveAllListeners();
             continueButton.onClick.AddListener(HandleContinueClicked);
+            continueButton.onClick.AddListener(()=> gameObject.SetActive(false));
         }
     }
 
@@ -81,26 +77,33 @@ public class AddUserPanel : UI_Panel
         for (var i = 0; i < activityInputRows.Count; i++)
         {
             var row = activityInputRows[i];
-            if (row == null || string.IsNullOrWhiteSpace(row.date))
+            if (row == null)
             {
                 continue;
             }
 
-            var hasFirst = TryParseInput(row.firstInput, out var firstValue);
-            var hasSecond = TryParseInput(row.secondInput, out var secondValue);
+            var hasFirst = TryParseInput(row.MessageInput, out var firstValue);
+            var hasSecond = TryParseInput(row.ReactionInput, out var secondValue);
+            var hasGroup = TryParseInput(row.GroupInput, out var groupValue);
             if (!hasFirst && !hasSecond)
             {
                 continue;
+            }
+
+            var normalizedDate = NormalizeDate(row.date);
+            if (string.IsNullOrWhiteSpace(normalizedDate))
+            {
+                normalizedDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             }
 
             var activity = new ActivityEventsData
             {
                 EventId = "E" + eventSequence,
                 UserId = userId,
-                Date = row.date,
+                Date = normalizedDate,
                 Messages = firstValue,
                 Reactions = secondValue,
-                UniqueGroups = defaultUniqueGroups
+                UniqueGroups = hasGroup ? Mathf.Max(0, groupValue) : defaultUniqueGroups
             };
 
             eventSequence++;
@@ -113,6 +116,8 @@ public class AddUserPanel : UI_Panel
 
     private void HandleContinueClicked()
     {
+        Debug.Log($"AddUserPanel: Submitting Users={createdUsers.Count}, Activities={createdActivities.Count}");
+        OnUserDataSubmitted?.Invoke(new List<UsersData>(createdUsers), new List<ActivityEventsData>(createdActivities));
         onContinue?.Invoke();
     }
 
@@ -131,5 +136,40 @@ public class AddUserPanel : UI_Panel
         }
 
         return int.TryParse(raw, out value);
+    }
+
+    private static string NormalizeDate(string rawDate)
+    {
+        if (string.IsNullOrWhiteSpace(rawDate))
+        {
+            return string.Empty;
+        }
+
+        var value = rawDate.Trim();
+        string[] formats =
+        {
+            "yyyy-MM-dd",
+            "dd.MM.yyyy",
+            "d.M.yyyy",
+            "dd/MM/yyyy",
+            "d/M/yyyy",
+            "MM/dd/yyyy",
+            "M/d/yyyy"
+        };
+
+        for (var i = 0; i < formats.Length; i++)
+        {
+            if (DateTime.TryParseExact(value, formats[i], CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
+            {
+                return parsed.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            }
+        }
+
+        if (DateTime.TryParse(value, out var fallback))
+        {
+            return fallback.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        }
+
+        return string.Empty;
     }
 }
