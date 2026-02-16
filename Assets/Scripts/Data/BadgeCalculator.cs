@@ -9,12 +9,12 @@ public class BadgeCalculator
         "^total_points\\s*(>=|<=|==|>|<)\\s*(-?[0-9]+)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    public List<BadgeAwardsData> Calculate(InputDataStore inputDataStore, List<LeaderboardData> leaderboard, DateTime dataDate)
+    public List<BadgeAwardsData> Calculate(List<BadgesData> badges, List<LeaderboardData> leaderboard, DateTime dataDate)
     {
         var result = new List<BadgeAwardsData>();
-        var badges = inputDataStore != null ? inputDataStore.Badges : null;
+        badges = badges ?? new List<BadgesData>();
 
-        if (badges == null || leaderboard == null)
+        if (leaderboard == null)
         {
             return result;
         }
@@ -75,7 +75,7 @@ public class BadgeCalculator
         return result;
     }
 
-    private static bool EvaluateCondition(string condition, int totalPoints)
+    private bool EvaluateCondition(string condition, int totalPoints)
     {
         if (string.IsNullOrWhiteSpace(condition))
         {

@@ -3,16 +3,10 @@ using System.Collections.Generic;
 
 public class MetricCalculator
 {
-    public List<UserStateData> Calculate(InputDataStore inputDataStore, DateTime dataDate)
+    public List<UserStateData> Calculate(List<UsersData> users, List<ActivityEventsData> activityEvents, DateTime dataDate)
     {
         var result = new List<UserStateData>();
-        if (inputDataStore == null)
-        {
-            return result;
-        }
 
-        var users = inputDataStore.Users ?? new List<UsersData>();
-        var events = inputDataStore.ActivityEvents ?? new List<ActivityEventsData>();
         var asOf = dataDate.Date;
         var start7d = asOf.AddDays(-6);
 
@@ -30,9 +24,9 @@ public class MetricCalculator
                 City = user.City
             };
 
-            for (var i = 0; i < events.Count; i++)
+            for (var i = 0; i < activityEvents.Count; i++)
             {
-                var evt = events[i];
+                var evt = activityEvents[i];
                 if (evt == null || !string.Equals(evt.UserId, user.UserId, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;

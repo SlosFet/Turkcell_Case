@@ -9,12 +9,10 @@ public class ChallengeCalculator
         "^([a-zA-Z0-9_]+)\\s*(>=|<=|==|>|<)\\s*(-?[0-9]+)$",
         RegexOptions.Compiled);
 
-    public List<ChallengeAwardsData> Calculate(InputDataStore inputDataStore, List<UserStateData> userState, DateTime dataDate)
+    public List<ChallengeAwardsData> Calculate(List<ChallengesData> challenges, List<UserStateData> userState, DateTime dataDate)
     {
         var results = new List<ChallengeAwardsData>();
-        var challenges = inputDataStore != null ? inputDataStore.Challenges : null;
-
-        if (challenges == null || userState == null)
+        if (userState == null)
         {
             return results;
         }
@@ -81,7 +79,7 @@ public class ChallengeCalculator
         return results;
     }
 
-    private static int CompareChallenges(ChallengesData left, ChallengesData right)
+    private int CompareChallenges(ChallengesData left, ChallengesData right)
     {
         var priorityCompare = left.Priority.CompareTo(right.Priority);
         if (priorityCompare != 0)
@@ -92,7 +90,7 @@ public class ChallengeCalculator
         return string.Compare(left.ChallengeId, right.ChallengeId, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static string JoinChallengeIds(List<ChallengesData> challenges, int startIndex)
+    private string JoinChallengeIds(List<ChallengesData> challenges, int startIndex)
     {
         var ids = new List<string>();
         for (var i = startIndex; i < challenges.Count; i++)
@@ -103,7 +101,7 @@ public class ChallengeCalculator
         return string.Join("|", ids);
     }
 
-    private static bool EvaluateCondition(string condition, UserStateData userState)
+    private bool EvaluateCondition(string condition, UserStateData userState)
     {
         if (string.IsNullOrWhiteSpace(condition) || userState == null)
         {
@@ -141,7 +139,7 @@ public class ChallengeCalculator
         }
     }
 
-    private static bool TryGetMetricValue(UserStateData userState, string field, out int value)
+    private bool TryGetMetricValue(UserStateData userState, string field, out int value)
     {
         value = 0;
 

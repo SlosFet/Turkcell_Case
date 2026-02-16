@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
 public class Case3PipelineRunner : MonoBehaviour
 {
+    public static event Action<InputDataStore, OutputDataStore> OnPipelineCompleted;
+
     [Header("Data Stores")]
     [SerializeField] private OutputDataStore _outputDataStore;
 
@@ -38,20 +41,20 @@ public class Case3PipelineRunner : MonoBehaviour
     {
         Debug.Log("[Pipeline] Started.");
 
-        if (!TryResolveDataDate(inputDataStore, out var dataDate))
+        if (!TryResolveDataDate(inputDataStore.ActivityEvents, out var dataDate))
         {
             Debug.LogError("[Pipeline] No valid date found in input activity events.");
             return;
         }
 
         var metricCalculator = new MetricCalculator();
-        var userState = metricCalculator.Calculate(inputDataStore, dataDate);
+        var userState = metricCalculator.Calculate(inputDataStore.Users, inputDataStore.ActivityEvents, dataDate);
         _outputDataStore.UserState = userState;
 
         Debug.Log($"[Pipeline] Metrics calculated for data date {dataDate:yyyy-MM-dd}. UserState count: {userState.Count}");
 
         var challengeCalculator = new ChallengeCalculator();
-        var challengeAwards = challengeCalculator.Calculate(inputDataStore, userState, dataDate);
+        var challengeAwards = challengeCalculator.Calculate(inputDataStore.Challenges, userState, dataDate);
         _outputDataStore.ChallengeAwards = challengeAwards;
 
         Debug.Log($"[Pipeline] Challenge awards calculated for data date {dataDate:yyyy-MM-dd}. Count: {challengeAwards.Count}");
@@ -69,7 +72,7 @@ public class Case3PipelineRunner : MonoBehaviour
         Debug.Log($"[Pipeline] Leaderboard calculated. Count: {leaderboard.Count}");
 
         var badgeCalculator = new BadgeCalculator();
-        var badgeAwards = badgeCalculator.Calculate(inputDataStore, leaderboard, dataDate);
+        var badgeAwards = badgeCalculator.Calculate(inputDataStore.Badges, leaderboard, dataDate);
         _outputDataStore.BadgeAwards = badgeAwards;
 
         Debug.Log($"[Pipeline] Badge awards calculated. Count: {badgeAwards.Count}");
@@ -81,15 +84,17 @@ public class Case3PipelineRunner : MonoBehaviour
         Debug.Log($"[Pipeline] Notifications calculated. Count: {notifications.Count}");
 
         OutputDataStore.SetCurrent(_outputDataStore);
+        OnPipelineCompleted?.Invoke(inputDataStore, _outputDataStore);
+
         Debug.Log("[Pipeline] Completed.");
     }
 
-    public static bool TryResolveDataDate(InputDataStore inputDataStore, out DateTime dataDate)
+    public static bool TryResolveDataDate(List<ActivityEventsData> activityEvents, out DateTime dataDate)
     {
         dataDate = DateTime.MinValue;
-        var events = inputDataStore != null ? inputDataStore.ActivityEvents : null;
+        activityEvents = activityEvents ?? new List<ActivityEventsData>();
 
-        if (events == null || events.Count == 0)
+        if (activityEvents.Count == 0)
         {
             return false;
         }
@@ -97,9 +102,9 @@ public class Case3PipelineRunner : MonoBehaviour
         var hasLatest = false;
         var latest = DateTime.MinValue;
 
-        for (var i = 0; i < events.Count; i++)
+        for (var i = 0; i < activityEvents.Count; i++)
         {
-            var evt = events[i];
+            var evt = activityEvents[i];
             if (evt == null)
             {
                 continue;
