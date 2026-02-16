@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
-[DefaultExecutionOrder(-900)]
-public sealed class Case3PipelineRunner : MonoBehaviour
+public class Case3PipelineRunner : MonoBehaviour
 {
+    [SerializeField] private OutputDataStore _outputDataStore;
+
     private void OnEnable()
     {
         GameCsvBootstrapper.OnInputDataLoaded += HandleInputDataLoaded;

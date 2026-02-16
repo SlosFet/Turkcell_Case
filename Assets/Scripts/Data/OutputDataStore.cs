@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class OutputDataStore : MonoBehaviour
+public class OutputDataStore : MonoBehaviour
 {
     public static OutputDataStore Current { get; private set; }
 

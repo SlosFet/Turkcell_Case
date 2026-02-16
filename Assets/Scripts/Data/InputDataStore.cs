@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class InputDataStore : MonoBehaviour
+public class InputDataStore : MonoBehaviour
 {
     public static InputDataStore Current { get; private set; }
 

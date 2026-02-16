@@ -2,8 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-[DefaultExecutionOrder(-1000)]
-public sealed class GameCsvBootstrapper : MonoBehaviour
+public class GameCsvBootstrapper : MonoBehaviour
 {
     public static event Action<InputDataStore> OnInputDataLoaded;
     public static bool IsInputDataLoaded { get; private set; }
@@ -18,7 +17,7 @@ public sealed class GameCsvBootstrapper : MonoBehaviour
     [SerializeField] private TextAsset challengesCsv;
     [SerializeField] private TextAsset badgesCsv;
 
-    private void Start()
+    private void Awake()
     {
         if (inputDataStore == null)
         {
