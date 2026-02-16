@@ -6,6 +6,9 @@ public class DashboardManager : MonoBehaviour
     [SerializeField] private LeaderboardPanel leaderboardPanel;
     [SerializeField] private UserDetailPanel userDetailPanel;
 
+    private InputDataStore cachedInputDataStore;
+    private OutputDataStore cachedOutputDataStore;
+
     private void OnEnable()
     {
         Case3PipelineRunner.OnPipelineCompleted += HandlePipelineCompleted;
@@ -18,6 +21,9 @@ public class DashboardManager : MonoBehaviour
 
     private void HandlePipelineCompleted(InputDataStore inputDataStore, OutputDataStore outputDataStore)
     {
+        cachedInputDataStore = inputDataStore;
+        cachedOutputDataStore = outputDataStore;
+
         if (leaderboardPanel == null)
         {
             Debug.LogError("DashboardManager: LeaderboardPanel reference is missing.");
@@ -50,7 +56,7 @@ public class DashboardManager : MonoBehaviour
 
         if (userDetailPanel != null)
         {
-            userDetailPanel.ShowUser(userId);
+            userDetailPanel.ShowUser(userId, cachedInputDataStore, cachedOutputDataStore);
             userDetailPanel.Open();
         }
     }
