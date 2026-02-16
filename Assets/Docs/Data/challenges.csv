@@ -1,0 +1,5 @@
+challenge_id,challenge_name,condition,reward_points,priority,is_active
+C-01,Günlük Mesajcı,messages_today >= 20,50,4,True
+C-02,Etkileşim Ustası,reactions_today >= 15,80,3,True
+C-03,Grup Lideri,unique_groups_today >= 3,120,2,True
+C-04,Haftalık Aktif,messages_7d >= 150,200,1,True

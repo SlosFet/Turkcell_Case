@@ -1,0 +1,6 @@
+award_id,user_id,triggered_challenges,selected_challenge,reward_points,suppressed_challenges,timestamp
+A-100,U1,C-04|C-03|C-02|C-01,C-04,200,C-03|C-02|C-01,2026-03-12T20:00:00Z
+A-101,U2,C-04|C-01,C-04,200,C-01,2026-03-12T19:57:00Z
+A-102,U3,C-04|C-02|C-01,C-04,200,C-02|C-01,2026-03-12T19:54:00Z
+A-103,U4,C-04|C-01,C-04,200,C-01,2026-03-12T19:51:00Z
+A-104,U5,C-01,C-01,50,,2026-03-12T19:48:00Z

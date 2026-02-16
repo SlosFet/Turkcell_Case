@@ -1,0 +1,4 @@
+badge_id,badge_name,condition,level
+B1,Bronz Sosyal,total_points >= 200,1
+B2,Gümüş Sosyal,total_points >= 600,2
+B3,Altın Sosyal,total_points >= 1000,3
