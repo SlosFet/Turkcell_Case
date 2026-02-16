@@ -4,46 +4,38 @@ using UnityEngine;
 [DefaultExecutionOrder(-1000)]
 public sealed class GameCsvBootstrapper : MonoBehaviour
 {
-    [Header("Optional CSV overrides")]
-    [SerializeField] private TextAsset activityEventsCsv;
-    [SerializeField] private TextAsset badgesCsv;
-    [SerializeField] private TextAsset badgeAwardsCsv;
-    [SerializeField] private TextAsset challengesCsv;
-    [SerializeField] private TextAsset challengeAwardsCsv;
-    [SerializeField] private TextAsset groupsCsv;
-    [SerializeField] private TextAsset leaderboardCsv;
-    [SerializeField] private TextAsset notificationsCsv;
-    [SerializeField] private TextAsset pointsLedgerCsv;
+    [Header("Data Stores")]
+    [SerializeField] private InputDataStore inputDataStore;
+
+    [Header("Optional Input CSV overrides")]
     [SerializeField] private TextAsset usersCsv;
-    [SerializeField] private TextAsset userStateCsv;
+    [SerializeField] private TextAsset groupsCsv;
+    [SerializeField] private TextAsset activityEventsCsv;
+    [SerializeField] private TextAsset challengesCsv;
+    [SerializeField] private TextAsset badgesCsv;
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-
-        var store = GetComponent<GameCsvDataStore>();
-        if (store == null)
+        if (inputDataStore == null)
         {
-            store = gameObject.AddComponent<GameCsvDataStore>();
+            Debug.LogError("GameCsvBootstrapper: InputDataStore reference is missing.");
+            return;
         }
 
-        store.ActivityEvents = CsvMapper.MapRows<ActivityEventsData>(LoadCsvText(activityEventsCsv, "activity_events"));
-        store.Badges = CsvMapper.MapRows<BadgesData>(LoadCsvText(badgesCsv, "badges"));
-        store.BadgeAwards = CsvMapper.MapRows<BadgeAwardsData>(LoadCsvText(badgeAwardsCsv, "badge_awards"));
-        store.Challenges = CsvMapper.MapRows<ChallengesData>(LoadCsvText(challengesCsv, "challenges"));
-        store.ChallengeAwards = CsvMapper.MapRows<ChallengeAwardsData>(LoadCsvText(challengeAwardsCsv, "challenge_awards"));
-        store.Groups = CsvMapper.MapRows<GroupsData>(LoadCsvText(groupsCsv, "groups"));
-        store.Leaderboard = CsvMapper.MapRows<LeaderboardData>(LoadCsvText(leaderboardCsv, "leaderboard"));
-        store.Notifications = CsvMapper.MapRows<NotificationsData>(LoadCsvText(notificationsCsv, "notifications"));
-        store.PointsLedger = CsvMapper.MapRows<PointsLedgerData>(LoadCsvText(pointsLedgerCsv, "points_ledger"));
-        store.Users = CsvMapper.MapRows<UsersData>(LoadCsvText(usersCsv, "users"));
-        store.UserState = CsvMapper.MapRows<UserStateData>(LoadCsvText(userStateCsv, "user_state"));
+        inputDataStore.Users = CsvMapper.MapRows<UsersData>(LoadCsvText(usersCsv, "users"));
+        inputDataStore.Groups = CsvMapper.MapRows<GroupsData>(LoadCsvText(groupsCsv, "groups"));
+        inputDataStore.ActivityEvents = CsvMapper.MapRows<ActivityEventsData>(LoadCsvText(activityEventsCsv, "activity_events"));
+        inputDataStore.Challenges = CsvMapper.MapRows<ChallengesData>(LoadCsvText(challengesCsv, "challenges"));
+        inputDataStore.Badges = CsvMapper.MapRows<BadgesData>(LoadCsvText(badgesCsv, "badges"));
 
-        GameCsvDataStore.SetCurrent(store);
-        Debug.Log($"CSV data loaded. Users: {store.Users.Count}, Challenges: {store.Challenges.Count}");
+        InputDataStore.SetCurrent(inputDataStore);
+
+        Debug.Log(
+            $"Input data loaded. Users: {inputDataStore.Users.Count}, Groups: {inputDataStore.Groups.Count}, " +
+            $"Events: {inputDataStore.ActivityEvents.Count}, Challenges: {inputDataStore.Challenges.Count}, Badges: {inputDataStore.Badges.Count}");
     }
 
-    private static string LoadCsvText(TextAsset overrideAsset, string fileNameWithoutExtension)
+    private string LoadCsvText(TextAsset overrideAsset, string fileNameWithoutExtension)
     {
         if (overrideAsset != null)
         {
