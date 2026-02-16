@@ -5,6 +5,7 @@ public class DashboardManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private LeaderboardPanel leaderboardPanel;
     [SerializeField] private UserDetailPanel userDetailPanel;
+    [SerializeField] private NotificationPanel notificationPanel;
 
     [Header("Mappers")]
     [SerializeField] private UserBadgeSpriteMapper spriteMapper;
@@ -53,12 +54,17 @@ public class DashboardManager : MonoBehaviour
             return;
         }
 
-        userDetailPanel.Initialize(HandleUserDetailBackClicked);
+        userDetailPanel.Initialize(HandleUserDetailBackClicked, OpenNotificationsFromUserDetail);
         isUserDetailInitialized = true;
     }
 
     public void OpenLeaderboardPanel()
     {
+        if (notificationPanel != null)
+        {
+            notificationPanel.Close();
+        }
+
         if (userDetailPanel != null)
         {
             userDetailPanel.Close();
@@ -72,6 +78,11 @@ public class DashboardManager : MonoBehaviour
 
     private void OpenUserDetailFromLeaderboard(string userId)
     {
+        if (notificationPanel != null)
+        {
+            notificationPanel.Close();
+        }
+
         if (leaderboardPanel != null)
         {
             leaderboardPanel.Close();
@@ -81,6 +92,20 @@ public class DashboardManager : MonoBehaviour
         {
             userDetailPanel.ShowUser(userId, cachedInputDataStore, cachedOutputDataStore, spriteMapper);
             userDetailPanel.Open();
+        }
+    }
+
+    private void OpenNotificationsFromUserDetail(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return;
+        }
+
+        if (notificationPanel != null)
+        {
+            notificationPanel.ShowForUser(userId, cachedOutputDataStore);
+            notificationPanel.Open();
         }
     }
 

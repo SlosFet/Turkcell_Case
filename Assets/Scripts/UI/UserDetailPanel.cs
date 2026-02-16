@@ -21,16 +21,16 @@ public class UserDetailPanel : UI_Panel
     [SerializeField] private TMP_Text weeklyMessagesText;
     [SerializeField] private TMP_Text dailyReactionsText;
     [SerializeField] private TMP_Text weeklyReactionsText;
-    [SerializeField] private TMP_Text notificationsText;
 
     [Header("Actions")]
     [SerializeField] private Button backToLeaderboardButton;
+    [SerializeField] private Button openNotificationsButton;
 
     private bool isInitialized;
 
     public string CurrentUserId { get; private set; }
 
-    public void Initialize(UnityAction onBackToLeaderboard)
+    public void Initialize(UnityAction onBackToLeaderboard, UnityAction<string> onOpenNotifications)
     {
         if (isInitialized)
         {
@@ -44,6 +44,18 @@ public class UserDetailPanel : UI_Panel
             {
                 backToLeaderboardButton.onClick.AddListener(onBackToLeaderboard);
             }
+        }
+
+        if (openNotificationsButton != null)
+        {
+            openNotificationsButton.onClick.RemoveAllListeners();
+            openNotificationsButton.onClick.AddListener(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(CurrentUserId))
+                {
+                    onOpenNotifications?.Invoke(CurrentUserId);
+                }
+            });
         }
 
         isInitialized = true;
@@ -70,8 +82,8 @@ public class UserDetailPanel : UI_Panel
         var userState = FindUserState(outputDataStore.UserState, CurrentUserId);
         var leaderboardRow = FindLeaderboardRow(outputDataStore.Leaderboard, CurrentUserId);
         var userAwards = FindChallengeAwards(outputDataStore.ChallengeAwards, CurrentUserId);
-        var userNotifications = FindNotifications(outputDataStore.Notifications, CurrentUserId);
         var highestBadgeId = FindHighestBadgeId(outputDataStore.BadgeAwards, CurrentUserId);
+        var hasNotifications = HasNotifications(outputDataStore.Notifications, CurrentUserId);
 
         SetText(fullNameText, user != null && !string.IsNullOrWhiteSpace(user.Name) ? user.Name : CurrentUserId);
         SetText(totalPointsText, leaderboardRow != null ? leaderboardRow.TotalPoints.ToString() : "0");
@@ -84,7 +96,10 @@ public class UserDetailPanel : UI_Panel
         SetText(dailyReactionsText, userState != null ? userState.ReactionsToday.ToString() : "0");
         SetText(weeklyReactionsText, userState != null ? userState.Reactions7d.ToString() : "0");
 
-        SetText(notificationsText, BuildNotificationsText(userNotifications));
+        if (openNotificationsButton != null)
+        {
+            openNotificationsButton.gameObject.SetActive(hasNotifications);
+        }
 
         if (userPhotoImage != null)
         {
@@ -154,23 +169,6 @@ public class UserDetailPanel : UI_Panel
         for (var i = 0; i < awards.Count; i++)
         {
             var item = awards[i];
-            if (item != null && string.Equals(item.UserId, userId, StringComparison.OrdinalIgnoreCase))
-            {
-                result.Add(item);
-            }
-        }
-
-        return result;
-    }
-
-    private static List<NotificationsData> FindNotifications(List<NotificationsData> notifications, string userId)
-    {
-        var result = new List<NotificationsData>();
-        notifications = notifications ?? new List<NotificationsData>();
-
-        for (var i = 0; i < notifications.Count; i++)
-        {
-            var item = notifications[i];
             if (item != null && string.Equals(item.UserId, userId, StringComparison.OrdinalIgnoreCase))
             {
                 result.Add(item);
@@ -259,33 +257,6 @@ public class UserDetailPanel : UI_Panel
         return sb.Length > 0 ? sb.ToString() : "-";
     }
 
-    private static string BuildNotificationsText(List<NotificationsData> notifications)
-    {
-        if (notifications == null || notifications.Count == 0)
-        {
-            return "-";
-        }
-
-        var sb = new StringBuilder();
-        for (var i = 0; i < notifications.Count; i++)
-        {
-            var item = notifications[i];
-            if (item == null || string.IsNullOrWhiteSpace(item.Message))
-            {
-                continue;
-            }
-
-            if (sb.Length > 0)
-            {
-                sb.AppendLine();
-            }
-
-            sb.Append(item.Message);
-        }
-
-        return sb.Length > 0 ? sb.ToString() : "-";
-    }
-
     private static int ParseBadgeLevel(string badgeId)
     {
         if (string.IsNullOrWhiteSpace(badgeId) || badgeId.Length < 2)
@@ -295,6 +266,21 @@ public class UserDetailPanel : UI_Panel
 
         var numeric = badgeId.Substring(1);
         return int.TryParse(numeric, out var level) ? level : 0;
+    }
+
+    private static bool HasNotifications(List<NotificationsData> notifications, string userId)
+    {
+        notifications = notifications ?? new List<NotificationsData>();
+        for (var i = 0; i < notifications.Count; i++)
+        {
+            var item = notifications[i];
+            if (item != null && string.Equals(item.UserId, userId, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static void SetText(TMP_Text textComponent, string value)
