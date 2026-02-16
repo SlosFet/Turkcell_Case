@@ -68,6 +68,12 @@ public class Case3PipelineRunner : MonoBehaviour
 
         Debug.Log($"[Pipeline] Leaderboard calculated. Count: {leaderboard.Count}");
 
+        var badgeCalculator = new BadgeCalculator();
+        var badgeAwards = badgeCalculator.Calculate(inputDataStore, leaderboard, dataDate);
+        _outputDataStore.BadgeAwards = badgeAwards;
+
+        Debug.Log($"[Pipeline] Badge awards calculated. Count: {badgeAwards.Count}");
+
         OutputDataStore.SetCurrent(_outputDataStore);
         Debug.Log("[Pipeline] Completed.");
     }
