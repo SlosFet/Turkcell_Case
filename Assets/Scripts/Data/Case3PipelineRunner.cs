@@ -5,11 +5,6 @@ public class Case3PipelineRunner : MonoBehaviour
     [Header("Data Stores")]
     [SerializeField] private OutputDataStore _outputDataStore;
 
-    [Header("Metrics")]
-    [SerializeField] private string asOfDate = string.Empty; // yyyy-MM-dd (empty => latest event date)
-
-    [SerializeField] private MetricCalculator _metricCalculator;
-
     private void OnEnable()
     {
         GameCsvBootstrapper.OnInputDataLoaded += HandleInputDataLoaded;
@@ -42,13 +37,24 @@ public class Case3PipelineRunner : MonoBehaviour
         Debug.Log("[Pipeline] Started.");
 
         var metricCalculator = new MetricCalculator();
-        var resolvedAsOfDate = metricCalculator.ResolveAsOfDate(inputDataStore, asOfDate);
-        var userState = metricCalculator.Calculate(inputDataStore, resolvedAsOfDate);
+        if (!metricCalculator.TryResolveAsOfDate(inputDataStore, out var resolvedAsOfDate))
+        {
+            Debug.LogError("[Pipeline] No valid date found in input activity events.");
+            return;
+        }
 
+        var userState = metricCalculator.Calculate(inputDataStore);
         _outputDataStore.UserState = userState;
-        OutputDataStore.SetCurrent(_outputDataStore);
 
-        Debug.Log($"[Pipeline] Metrics calculated for {resolvedAsOfDate:yyyy-MM-dd}. UserState count: {userState.Count}");
+        Debug.Log($"[Pipeline] Metrics calculated for data date {resolvedAsOfDate:yyyy-MM-dd}. UserState count: {userState.Count}");
+
+        var challengeCalculator = new ChallengeCalculator();
+        var challengeAwards = challengeCalculator.Calculate(inputDataStore, userState);
+        _outputDataStore.ChallengeAwards = challengeAwards;
+
+        Debug.Log($"[Pipeline] Challenge awards calculated for data date {resolvedAsOfDate:yyyy-MM-dd}. Count: {challengeAwards.Count}");
+
+        OutputDataStore.SetCurrent(_outputDataStore);
         Debug.Log("[Pipeline] Completed.");
     }
 }

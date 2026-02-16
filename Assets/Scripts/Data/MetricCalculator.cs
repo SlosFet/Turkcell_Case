@@ -4,7 +4,7 @@ using System.Globalization;
 
 public class MetricCalculator
 {
-    public List<UserStateData> Calculate(InputDataStore inputDataStore, DateTime asOfDate)
+    public List<UserStateData> Calculate(InputDataStore inputDataStore)
     {
         var result = new List<UserStateData>();
         if (inputDataStore == null)
@@ -12,9 +12,13 @@ public class MetricCalculator
             return result;
         }
 
+        if (!TryResolveAsOfDate(inputDataStore, out var asOfDate))
+        {
+            return result;
+        }
+
         var users = inputDataStore.Users ?? new List<UsersData>();
         var events = inputDataStore.ActivityEvents ?? new List<ActivityEventsData>();
-
         var asOf = asOfDate.Date;
         var start7d = asOf.AddDays(-6);
 
@@ -67,38 +71,42 @@ public class MetricCalculator
         return result;
     }
 
-    public DateTime ResolveAsOfDate(InputDataStore inputDataStore, string explicitAsOfDate)
+    public bool TryResolveAsOfDate(InputDataStore inputDataStore, out DateTime asOfDate)
     {
-        if (!string.IsNullOrWhiteSpace(explicitAsOfDate) &&
-            DateTime.TryParseExact(explicitAsOfDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedExplicit))
-        {
-            return parsedExplicit.Date;
-        }
-
-        var latest = DateTime.MinValue;
-        var hasLatest = false;
+        asOfDate = DateTime.MinValue;
         var events = inputDataStore != null ? inputDataStore.ActivityEvents : null;
 
-        if (events != null)
+        if (events == null || events.Count == 0)
         {
-            for (var i = 0; i < events.Count; i++)
-            {
-                var evt = events[i];
-                if (evt == null || !TryParseEventDate(evt.Date, out var eventDate))
-                {
-                    continue;
-                }
+            return false;
+        }
 
-                var date = eventDate.Date;
-                if (!hasLatest || date > latest)
-                {
-                    latest = date;
-                    hasLatest = true;
-                }
+        var hasLatest = false;
+        var latest = DateTime.MinValue;
+
+        for (var i = 0; i < events.Count; i++)
+        {
+            var evt = events[i];
+            if (evt == null || !TryParseEventDate(evt.Date, out var eventDate))
+            {
+                continue;
+            }
+
+            var date = eventDate.Date;
+            if (!hasLatest || date > latest)
+            {
+                latest = date;
+                hasLatest = true;
             }
         }
 
-        return hasLatest ? latest : DateTime.Today;
+        if (!hasLatest)
+        {
+            return false;
+        }
+
+        asOfDate = latest;
+        return true;
     }
 
     private bool TryParseEventDate(string rawDate, out DateTime parsedDate)
