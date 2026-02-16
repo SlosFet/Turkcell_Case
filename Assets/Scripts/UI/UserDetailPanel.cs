@@ -88,8 +88,8 @@ public class UserDetailPanel : UI_Panel
         SetText(fullNameText, user != null && !string.IsNullOrWhiteSpace(user.Name) ? user.Name : CurrentUserId);
         SetText(totalPointsText, leaderboardRow != null ? "Total Point: " +  leaderboardRow.TotalPoints.ToString() : "0");
 
-        SetText(triggeredChallengesText, BuildTriggeredChallengesText(userAwards));
-        SetText(selectedChallengeText, BuildSelectedChallengeText(userAwards));
+        SetText(triggeredChallengesText,"Triggered Challenges:\n\n" + BuildTriggeredChallengesText(userAwards));
+        SetText(selectedChallengeText,"Selected Challenge:\n\n" + BuildSelectedChallengeText(userAwards));
 
         SetText(dailyMessagesText, userState != null ? userState.MessagesToday.ToString() : "0");
         SetText(weeklyMessagesText, userState != null ? userState.Messages7d.ToString() : "0");
