@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UserDetailPanel : UI_Panel
@@ -22,7 +23,31 @@ public class UserDetailPanel : UI_Panel
     [SerializeField] private TMP_Text weeklyReactionsText;
     [SerializeField] private TMP_Text notificationsText;
 
+    [Header("Actions")]
+    [SerializeField] private Button backToLeaderboardButton;
+
+    private bool isInitialized;
+
     public string CurrentUserId { get; private set; }
+
+    public void Initialize(UnityAction onBackToLeaderboard)
+    {
+        if (isInitialized)
+        {
+            return;
+        }
+
+        if (backToLeaderboardButton != null)
+        {
+            backToLeaderboardButton.onClick.RemoveAllListeners();
+            if (onBackToLeaderboard != null)
+            {
+                backToLeaderboardButton.onClick.AddListener(onBackToLeaderboard);
+            }
+        }
+
+        isInitialized = true;
+    }
 
     public void ShowUser(
         string userId,

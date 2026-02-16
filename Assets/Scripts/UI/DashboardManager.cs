@@ -11,6 +11,7 @@ public class DashboardManager : MonoBehaviour
 
     private InputDataStore cachedInputDataStore;
     private OutputDataStore cachedOutputDataStore;
+    private bool isUserDetailInitialized;
 
     private void OnEnable()
     {
@@ -27,6 +28,8 @@ public class DashboardManager : MonoBehaviour
         cachedInputDataStore = inputDataStore;
         cachedOutputDataStore = outputDataStore;
 
+        InitializeUserDetailPanel();
+
         if (leaderboardPanel == null)
         {
             Debug.LogError("DashboardManager: LeaderboardPanel reference is missing.");
@@ -35,6 +38,23 @@ public class DashboardManager : MonoBehaviour
 
         leaderboardPanel.Render(inputDataStore, outputDataStore, spriteMapper, OpenUserDetailFromLeaderboard);
         OpenLeaderboardPanel();
+    }
+
+    private void InitializeUserDetailPanel()
+    {
+        if (isUserDetailInitialized)
+        {
+            return;
+        }
+
+        if (userDetailPanel == null)
+        {
+            Debug.LogError("DashboardManager: UserDetailPanel reference is missing.");
+            return;
+        }
+
+        userDetailPanel.Initialize(HandleUserDetailBackClicked);
+        isUserDetailInitialized = true;
     }
 
     public void OpenLeaderboardPanel()
@@ -62,5 +82,10 @@ public class DashboardManager : MonoBehaviour
             userDetailPanel.ShowUser(userId, cachedInputDataStore, cachedOutputDataStore, spriteMapper);
             userDetailPanel.Open();
         }
+    }
+
+    private void HandleUserDetailBackClicked()
+    {
+        OpenLeaderboardPanel();
     }
 }
