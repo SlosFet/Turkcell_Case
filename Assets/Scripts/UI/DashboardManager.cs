@@ -5,7 +5,6 @@ public class DashboardManager : MonoBehaviour
 {
     private const string LeaderboardHeader = "Leaderboard";
     private const string ProfileHeader = "Profile Data";
-    private const string NotificationsHeader = "Notifications";
 
     [Header("Header")]
     [SerializeField] private TMP_Text headerText;
@@ -14,6 +13,7 @@ public class DashboardManager : MonoBehaviour
     [SerializeField] private LeaderboardPanel leaderboardPanel;
     [SerializeField] private UserDetailPanel userDetailPanel;
     [SerializeField] private NotificationPanel notificationPanel;
+    [SerializeField] private UserMetricsPanel userMetricsPanel;
 
     [Header("Mappers")]
     [SerializeField] private UserBadgeSpriteMapper spriteMapper;
@@ -62,7 +62,7 @@ public class DashboardManager : MonoBehaviour
             return;
         }
 
-        userDetailPanel.Initialize(HandleUserDetailBackClicked, OpenNotificationsFromUserDetail);
+        userDetailPanel.Initialize(HandleUserDetailBackClicked, OpenNotificationsFromUserDetail, OpenUserMetricsFromUserDetail);
         isUserDetailInitialized = true;
     }
 
@@ -71,6 +71,11 @@ public class DashboardManager : MonoBehaviour
         if (notificationPanel != null)
         {
             notificationPanel.Close();
+        }
+
+        if (userMetricsPanel != null)
+        {
+            userMetricsPanel.Close();
         }
 
         if (userDetailPanel != null)
@@ -90,6 +95,11 @@ public class DashboardManager : MonoBehaviour
         if (notificationPanel != null)
         {
             notificationPanel.Close();
+        }
+
+        if (userMetricsPanel != null)
+        {
+            userMetricsPanel.Close();
         }
 
         if (leaderboardPanel != null)
@@ -114,9 +124,22 @@ public class DashboardManager : MonoBehaviour
 
         if (notificationPanel != null)
         {
-            SetHeader(NotificationsHeader);
             notificationPanel.ShowForUser(userId, cachedOutputDataStore);
             notificationPanel.Open();
+        }
+    }
+
+    private void OpenUserMetricsFromUserDetail(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return;
+        }
+
+        if (userMetricsPanel != null)
+        {
+            userMetricsPanel.ShowForUser(userId, cachedInputDataStore != null ? cachedInputDataStore.ActivityEvents : null);
+            userMetricsPanel.Open();
         }
     }
 

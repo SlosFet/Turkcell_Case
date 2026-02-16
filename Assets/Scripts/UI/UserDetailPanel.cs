@@ -17,20 +17,20 @@ public class UserDetailPanel : UI_Panel
     [SerializeField] private TMP_Text totalPointsText;
     [SerializeField] private TMP_Text triggeredChallengesText;
     [SerializeField] private TMP_Text selectedChallengeText;
-    [SerializeField] private TMP_Text dailyMessagesText;
-    [SerializeField] private TMP_Text weeklyMessagesText;
-    [SerializeField] private TMP_Text dailyReactionsText;
-    [SerializeField] private TMP_Text weeklyReactionsText;
 
     [Header("Actions")]
     [SerializeField] private Button backToLeaderboardButton;
     [SerializeField] private Button openNotificationsButton;
+    [SerializeField] private Button openUserMetricsButton;
 
     private bool isInitialized;
 
     public string CurrentUserId { get; private set; }
 
-    public void Initialize(UnityAction onBackToLeaderboard, UnityAction<string> onOpenNotifications)
+    public void Initialize(
+        UnityAction onBackToLeaderboard,
+        UnityAction<string> onOpenNotifications,
+        UnityAction<string> onOpenUserMetrics)
     {
         if (isInitialized)
         {
@@ -58,6 +58,18 @@ public class UserDetailPanel : UI_Panel
             });
         }
 
+        if (openUserMetricsButton != null)
+        {
+            openUserMetricsButton.onClick.RemoveAllListeners();
+            openUserMetricsButton.onClick.AddListener(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(CurrentUserId))
+                {
+                    onOpenUserMetrics?.Invoke(CurrentUserId);
+                }
+            });
+        }
+
         isInitialized = true;
     }
 
@@ -79,26 +91,26 @@ public class UserDetailPanel : UI_Panel
         }
 
         var user = FindUser(inputDataStore.Users, CurrentUserId);
-        var userState = FindUserState(outputDataStore.UserState, CurrentUserId);
         var leaderboardRow = FindLeaderboardRow(outputDataStore.Leaderboard, CurrentUserId);
         var userAwards = FindChallengeAwards(outputDataStore.ChallengeAwards, CurrentUserId);
         var highestBadgeId = FindHighestBadgeId(outputDataStore.BadgeAwards, CurrentUserId);
         var hasNotifications = HasNotifications(outputDataStore.Notifications, CurrentUserId);
+        var hasActivities = HasActivities(inputDataStore.ActivityEvents, CurrentUserId);
 
         SetText(fullNameText, user != null && !string.IsNullOrWhiteSpace(user.Name) ? user.Name : CurrentUserId);
-        SetText(totalPointsText, leaderboardRow != null ? "Total Point: " +  leaderboardRow.TotalPoints.ToString() : "0");
+        SetText(totalPointsText, leaderboardRow != null ? "Total Point: " + leaderboardRow.TotalPoints.ToString() : "0");
 
-        SetText(triggeredChallengesText,"Triggered Challenges:\n\n" + BuildTriggeredChallengesText(userAwards));
-        SetText(selectedChallengeText,"Selected Challenge:\n\n" + BuildSelectedChallengeText(userAwards));
-
-        SetText(dailyMessagesText, userState != null ? userState.MessagesToday.ToString() : "0");
-        SetText(weeklyMessagesText, userState != null ? userState.Messages7d.ToString() : "0");
-        SetText(dailyReactionsText, userState != null ? userState.ReactionsToday.ToString() : "0");
-        SetText(weeklyReactionsText, userState != null ? userState.Reactions7d.ToString() : "0");
+        SetText(triggeredChallengesText, "Triggered Challenges:\n" + BuildTriggeredChallengesText(userAwards));
+        SetText(selectedChallengeText, "Selected Challenge:\n" + BuildSelectedChallengeText(userAwards));
 
         if (openNotificationsButton != null)
         {
             openNotificationsButton.gameObject.SetActive(hasNotifications);
+        }
+
+        if (openUserMetricsButton != null)
+        {
+            openUserMetricsButton.gameObject.SetActive(hasActivities);
         }
 
         if (userPhotoImage != null)
@@ -125,21 +137,6 @@ public class UserDetailPanel : UI_Panel
             if (user != null && string.Equals(user.UserId, userId, StringComparison.OrdinalIgnoreCase))
             {
                 return user;
-            }
-        }
-
-        return null;
-    }
-
-    private static UserStateData FindUserState(List<UserStateData> userStateList, string userId)
-    {
-        userStateList = userStateList ?? new List<UserStateData>();
-        for (var i = 0; i < userStateList.Count; i++)
-        {
-            var item = userStateList[i];
-            if (item != null && string.Equals(item.UserId, userId, StringComparison.OrdinalIgnoreCase))
-            {
-                return item;
             }
         }
 
@@ -274,6 +271,21 @@ public class UserDetailPanel : UI_Panel
         for (var i = 0; i < notifications.Count; i++)
         {
             var item = notifications[i];
+            if (item != null && string.Equals(item.UserId, userId, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasActivities(List<ActivityEventsData> activities, string userId)
+    {
+        activities = activities ?? new List<ActivityEventsData>();
+        for (var i = 0; i < activities.Count; i++)
+        {
+            var item = activities[i];
             if (item != null && string.Equals(item.UserId, userId, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
