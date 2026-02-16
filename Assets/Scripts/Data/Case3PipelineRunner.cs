@@ -62,6 +62,12 @@ public class Case3PipelineRunner : MonoBehaviour
 
         Debug.Log($"[Pipeline] Points ledger calculated. Count: {pointsLedger.Count}");
 
+        var leaderboardCalculator = new LeaderboardCalculator();
+        var leaderboard = leaderboardCalculator.Calculate(pointsLedger);
+        _outputDataStore.Leaderboard = leaderboard;
+
+        Debug.Log($"[Pipeline] Leaderboard calculated. Count: {leaderboard.Count}");
+
         OutputDataStore.SetCurrent(_outputDataStore);
         Debug.Log("[Pipeline] Completed.");
     }
