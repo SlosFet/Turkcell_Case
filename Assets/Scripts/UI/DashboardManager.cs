@@ -1,7 +1,15 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class DashboardManager : MonoBehaviour
 {
+    private const string LeaderboardHeader = "Leaderboard";
+    private const string ProfileHeader = "Profile Data";
+    private const string NotificationsHeader = "Notifications";
+
+    [Header("Header")]
+    [SerializeField] private TMP_Text headerText;
+
     [Header("Panels")]
     [SerializeField] private LeaderboardPanel leaderboardPanel;
     [SerializeField] private UserDetailPanel userDetailPanel;
@@ -72,6 +80,7 @@ public class DashboardManager : MonoBehaviour
 
         if (leaderboardPanel != null)
         {
+            SetHeader(LeaderboardHeader);
             leaderboardPanel.Open();
         }
     }
@@ -90,6 +99,7 @@ public class DashboardManager : MonoBehaviour
 
         if (userDetailPanel != null)
         {
+            SetHeader(ProfileHeader);
             userDetailPanel.ShowUser(userId, cachedInputDataStore, cachedOutputDataStore, spriteMapper);
             userDetailPanel.Open();
         }
@@ -104,6 +114,7 @@ public class DashboardManager : MonoBehaviour
 
         if (notificationPanel != null)
         {
+            SetHeader(NotificationsHeader);
             notificationPanel.ShowForUser(userId, cachedOutputDataStore);
             notificationPanel.Open();
         }
@@ -112,5 +123,13 @@ public class DashboardManager : MonoBehaviour
     private void HandleUserDetailBackClicked()
     {
         OpenLeaderboardPanel();
+    }
+
+    private void SetHeader(string text)
+    {
+        if (headerText != null)
+        {
+            headerText.text = text;
+        }
     }
 }
