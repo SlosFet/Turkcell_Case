@@ -56,6 +56,12 @@ public class Case3PipelineRunner : MonoBehaviour
 
         Debug.Log($"[Pipeline] Challenge awards calculated for data date {dataDate:yyyy-MM-dd}. Count: {challengeAwards.Count}");
 
+        var ledgerCalculator = new LedgerCalculator();
+        var pointsLedger = ledgerCalculator.Calculate(challengeAwards);
+        _outputDataStore.PointsLedger = pointsLedger;
+
+        Debug.Log($"[Pipeline] Points ledger calculated. Count: {pointsLedger.Count}");
+
         OutputDataStore.SetCurrent(_outputDataStore);
         Debug.Log("[Pipeline] Completed.");
     }
