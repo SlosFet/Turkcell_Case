@@ -12,7 +12,6 @@ public class Case3PipelineRunner : MonoBehaviour
 
     private void OnEnable()
     {
-        print(123);
         GameCsvBootstrapper.OnInputDataLoaded += HandleInputDataLoaded;
     }
 
@@ -42,26 +41,45 @@ public class Case3PipelineRunner : MonoBehaviour
     {
         Debug.Log("[Pipeline] Started.");
 
-        if (!TryResolveDataDate(inputDataStore.ActivityEvents, out var dataDate))
+        var orderedDataDates = GetOrderedDataDates(inputDataStore.ActivityEvents);
+        if (orderedDataDates.Count == 0)
         {
             Debug.LogError("[Pipeline] No valid date found in input activity events.");
             return;
         }
 
         var metricCalculator = new MetricCalculator();
-        var userState = metricCalculator.Calculate(inputDataStore.Users, inputDataStore.ActivityEvents, dataDate);
-        _outputDataStore.UserState = userState;
-
-        Debug.Log($"[Pipeline] Metrics calculated for data date {dataDate:yyyy-MM-dd}. UserState count: {userState.Count}");
-
         var challengeCalculator = new ChallengeCalculator();
-        var challengeAwards = challengeCalculator.Calculate(inputDataStore.Challenges, userState, dataDate);
-        _outputDataStore.ChallengeAwards = challengeAwards;
 
-        Debug.Log($"[Pipeline] Challenge awards calculated for data date {dataDate:yyyy-MM-dd}. Count: {challengeAwards.Count}");
+        var allChallengeAwards = new List<ChallengeAwardsData>();
+        List<UserStateData> latestUserState = null;
+        var nextAwardSequence = 100;
+
+        for (var i = 0; i < orderedDataDates.Count; i++)
+        {
+            var dataDate = orderedDataDates[i];
+            var userStateForDate = metricCalculator.Calculate(inputDataStore.Users, inputDataStore.ActivityEvents, dataDate);
+            latestUserState = userStateForDate;
+
+            var challengeAwardsForDate = challengeCalculator.Calculate(
+                inputDataStore.Challenges,
+                userStateForDate,
+                dataDate,
+                nextAwardSequence);
+
+            nextAwardSequence += challengeAwardsForDate.Count;
+            allChallengeAwards.AddRange(challengeAwardsForDate);
+        }
+
+        _outputDataStore.UserState = latestUserState ?? new List<UserStateData>();
+        _outputDataStore.ChallengeAwards = allChallengeAwards;
+
+        var latestDataDate = orderedDataDates[orderedDataDates.Count - 1];
+        Debug.Log($"[Pipeline] Metrics calculated up to {latestDataDate:yyyy-MM-dd}. UserState count: {_outputDataStore.UserState.Count}");
+        Debug.Log($"[Pipeline] Challenge awards calculated across {orderedDataDates.Count} day(s). Count: {allChallengeAwards.Count}");
 
         var ledgerCalculator = new LedgerCalculator();
-        var pointsLedger = ledgerCalculator.Calculate(challengeAwards);
+        var pointsLedger = ledgerCalculator.Calculate(allChallengeAwards);
         _outputDataStore.PointsLedger = pointsLedger;
 
         Debug.Log($"[Pipeline] Points ledger calculated. Count: {pointsLedger.Count}");
@@ -73,13 +91,13 @@ public class Case3PipelineRunner : MonoBehaviour
         Debug.Log($"[Pipeline] Leaderboard calculated. Count: {leaderboard.Count}");
 
         var badgeCalculator = new BadgeCalculator();
-        var badgeAwards = badgeCalculator.Calculate(inputDataStore.Badges, leaderboard, dataDate);
+        var badgeAwards = badgeCalculator.Calculate(inputDataStore.Badges, leaderboard, latestDataDate);
         _outputDataStore.BadgeAwards = badgeAwards;
 
         Debug.Log($"[Pipeline] Badge awards calculated. Count: {badgeAwards.Count}");
 
         var notificationCalculator = new NotificationCalculator();
-        var notifications = notificationCalculator.Calculate(challengeAwards);
+        var notifications = notificationCalculator.Calculate(allChallengeAwards);
         _outputDataStore.Notifications = notifications;
 
         Debug.Log($"[Pipeline] Notifications calculated. Count: {notifications.Count}");
@@ -134,5 +152,39 @@ public class Case3PipelineRunner : MonoBehaviour
 
         dataDate = latest;
         return true;
+    }
+
+    private static List<DateTime> GetOrderedDataDates(List<ActivityEventsData> activityEvents)
+    {
+        var dates = new HashSet<DateTime>();
+        var result = new List<DateTime>();
+        activityEvents = activityEvents ?? new List<ActivityEventsData>();
+
+        for (var i = 0; i < activityEvents.Count; i++)
+        {
+            var evt = activityEvents[i];
+            if (evt == null)
+            {
+                continue;
+            }
+
+            if (!DateTime.TryParseExact(evt.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                if (!DateTime.TryParse(evt.Date, out parsedDate))
+                {
+                    continue;
+                }
+            }
+
+            dates.Add(parsedDate.Date);
+        }
+
+        foreach (var date in dates)
+        {
+            result.Add(date);
+        }
+
+        result.Sort();
+        return result;
     }
 }

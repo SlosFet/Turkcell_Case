@@ -9,7 +9,11 @@ public class ChallengeCalculator
         "^([a-zA-Z0-9_]+)\\s*(>=|<=|==|>|<)\\s*(-?[0-9]+)$",
         RegexOptions.Compiled);
 
-    public List<ChallengeAwardsData> Calculate(List<ChallengesData> challenges, List<UserStateData> userState, DateTime dataDate)
+    public List<ChallengeAwardsData> Calculate(
+        List<ChallengesData> challenges,
+        List<UserStateData> userState,
+        DateTime dataDate,
+        int startAwardSequence)
     {
         var results = new List<ChallengeAwardsData>();
         if (userState == null)
@@ -34,7 +38,7 @@ public class ChallengeCalculator
         var orderedUsers = new List<UserStateData>(userState);
         orderedUsers.Sort((a, b) => string.Compare(a.UserId, b.UserId, StringComparison.OrdinalIgnoreCase));
 
-        var awardSequence = 100;
+        var awardSequence = startAwardSequence;
         for (var userIndex = 0; userIndex < orderedUsers.Count; userIndex++)
         {
             var user = orderedUsers[userIndex];

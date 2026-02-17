@@ -5769,11 +5769,11 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 94189454be3b9a64fbd0eac712776cc5, type: 3}
   badgeSprites:
   - badgeId: B1
-    sprite: {fileID: -800519746, guid: 3ff1f6d2ca5c375408bf60fca5ed577f, type: 3}
+    sprite: {fileID: 1586820524, guid: 3ff1f6d2ca5c375408bf60fca5ed577f, type: 3}
   - badgeId: B2
     sprite: {fileID: 1743634160, guid: 3ff1f6d2ca5c375408bf60fca5ed577f, type: 3}
   - badgeId: B3
-    sprite: {fileID: 1586820524, guid: 3ff1f6d2ca5c375408bf60fca5ed577f, type: 3}
+    sprite: {fileID: -800519746, guid: 3ff1f6d2ca5c375408bf60fca5ed577f, type: 3}
 --- !u!4 &823204237
 Transform:
   m_ObjectHideFlags: 0
